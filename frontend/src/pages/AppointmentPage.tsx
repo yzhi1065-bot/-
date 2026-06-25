@@ -15,7 +15,7 @@ export default function AppointmentPage() {
   const loadAppointments = useCallback(async () => {
     setLoading(true)
     try {
-      const res: any = await request.get('/api/patients/appointments', { params: { page: 1, page_size: 50 } })
+      const res: any = await request.get('/api/appointments', { params: { page: 1, page_size: 50 } })
       setAppointments(res?.data?.items || [])
     } catch {
       setAppointments([
@@ -33,7 +33,7 @@ export default function AppointmentPage() {
 
   const handleCreate = async (values: any) => {
     try {
-      await request.post('/api/patients/appointments', {
+      await request.post('/api/appointments', {
         patient_name: values.patient,
         doctor_name: values.doctor,
         appointment_date: values.date?.format('YYYY-MM-DD'),
@@ -50,7 +50,7 @@ export default function AppointmentPage() {
 
   const handleCancel = async (id: number) => {
     try {
-      await request.post(`/api/patients/appointments/${id}/cancel`)
+      await request.post(`/api/appointments/${id}/cancel`)
       message.success('已取消预约')
       loadAppointments()
     } catch {

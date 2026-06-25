@@ -17,7 +17,7 @@ export default function MedicalRecordPage() {
     setLoading(true)
     try {
       const [recRes, statsRes] = await Promise.all([
-        request.get('/api/patients/records', { params: { page: 1, page_size: 50, keyword: search || undefined } }).catch(() => null),
+        request.get('/api/medical-records', { params: { page: 1, page_size: 50, keyword: search || undefined } }).catch(() => null),
         request.get('/api/stats/dashboard').catch(() => null),
       ])
       if (recRes) setRecords((recRes as any)?.data?.items || [])

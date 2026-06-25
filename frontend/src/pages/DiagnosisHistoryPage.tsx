@@ -33,7 +33,7 @@ export default function DiagnosisHistoryPage() {
     if (!selectedPatient) return
     setLoading(true)
     try {
-      const res: any = await request.get(`/api/patients/search?name=${selectedPatient}`)
+      const res: any = await request.get(`/api/patient-search?name=${selectedPatient}`)
       const patient = res?.data?.items?.[0]
       if (patient?.id) {
         const sessionsRes: any = await request.get(`/api/diagnosis/patients/${patient.id}/sessions`)

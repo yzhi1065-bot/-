@@ -26,7 +26,7 @@ export default function LiveStatsPage() {
         request.get('/api/stats/top-herbs').catch(() => ({ data: [] })),
       ])
       setDashboardStats((dashRes as any)?.data || {})
-      setPatterns((patRes as any)?.data || [])
+      setPatterns((patRes as any)?.data?.patterns || (patRes as any)?.data || [])
       setTopHerbs((herbRes as any)?.data || [])
     } catch (e) { /* ignore */ }
     setLoading(false)
@@ -61,7 +61,7 @@ export default function LiveStatsPage() {
             ) : (
               <Table dataSource={patterns} rowKey="pattern" pagination={false} size="small"
                 columns={[
-                  { title: '证型', dataIndex: 'pattern', key: 'pattern', render: (v: string) => <Tag color="red">{v}</Tag> },
+                  { title: '证型', dataIndex: 'name', key: 'name', render: (v: string) => <Tag color="red">{v}</Tag> },
                   { title: '人数', dataIndex: 'count', key: 'count' },
                   { title: '占比', dataIndex: 'percentage', key: 'pct',
                     render: (v: number) => (
@@ -83,7 +83,7 @@ export default function LiveStatsPage() {
               <Table dataSource={topHerbs} rowKey="name" pagination={false} size="small"
                 columns={[
                   { title: '药品', dataIndex: 'name', key: 'name' },
-                  { title: '使用次数', dataIndex: 'count', key: 'count' },
+                  { title: '使用次数', dataIndex: 'quantity', key: 'quantity' },
                   { title: '销售金额', dataIndex: 'amount', key: 'amount', render: (v: number) => `¥${v}` },
                 ]} />
             )}
