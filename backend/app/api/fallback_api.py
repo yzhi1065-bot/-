@@ -26,10 +26,6 @@ def symptoms(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok({"bodyParts":["头部","眼部","鼻部","口腔","咽喉","颈部","胸部","腹部","腰部","背部","上肢","下肢"],
                "commonComplaints":["头痛","发热","咳嗽","胃痛","腰痛","失眠","眩晕","腹泻","便秘","口干","心悸","乏力"]})
 
-@router.get("/api/followups")
-def followups(current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return ok([])
-
 @router.get("/api/health-advice")
 def health_advice(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([])
@@ -54,20 +50,12 @@ def medication(current_user: User = Depends(require_permissions(PHARMACY_READ)))
 def referrals(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([])
 
-@router.get("/api/nursing")
-def nursing(current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return ok([])
-
 @router.get("/api/satisfaction/feedbacks")
 def satisfaction(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([])
 
 @router.get("/api/finance/transactions")
 def finance(current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return ok([])
-
-@router.get("/api/schedules")
-def schedules(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([])
 
 @router.get("/api/notifications")

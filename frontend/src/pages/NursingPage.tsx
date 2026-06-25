@@ -25,7 +25,7 @@ export default function NursingPage() {
 
   useEffect(() => {
     setLoading(true)
-    request.get('/nursing').then((res: any) => {
+    request.get('/api/nursing').then((res: any) => {
       const d = res.data || res
       if (d.records) setRecords(d.records)
       if (d.handovers) setHandovers(d.handovers)

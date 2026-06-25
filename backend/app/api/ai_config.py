@@ -12,10 +12,10 @@ router = APIRouter(prefix="/api/ai-config", tags=["AI配置"])
 
 # 当前AI配置（内存存储，生产环境应写入数据库）
 current_config = {
-    "mode": "demo",
+    "mode": "online",
     "provider": "deepseek",
     "api_url": "http://127.0.0.1:15721/v1",
-    "api_key": "",
+    "api_key": "local-proxy",
     "model": "deepseek-chat",
     "temperature": 0.3,
 }

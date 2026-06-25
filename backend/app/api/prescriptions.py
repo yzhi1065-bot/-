@@ -160,7 +160,7 @@ def create_treatment_plan(
             setattr(existing, key, value)
         db.commit()
         return Response(message="治疗方案已更新")
-    plan = TreatmentPlan(session_id=data.session_id, **data.model_dump(exclude_unset=True))
+    plan = TreatmentPlan(session_id=data.session_id, **data.model_dump(exclude_unset=True, exclude={"session_id"}))
     db.add(plan)
     db.commit()
     return Response(message="治疗方案已创建")

@@ -19,7 +19,7 @@ export default function SchedulePage() {
 
   useEffect(() => {
     setLoading(true)
-    request.get('/schedules').then((res: any) => {
+    request.get('/api/schedules').then((res: any) => {
       const d = res.data || res
       if (d.list) setSchedules(d.list)
       if (d.stats) setStats(d.stats)
