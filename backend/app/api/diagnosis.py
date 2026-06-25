@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, DIAGNOSIS_READ, DIAGNOSIS_CREATE, DIAGNOSIS_UPDATE
 from app.models.user import User
 from app.models.patient import Patient
 from app.models.diagnosis import (
@@ -32,7 +33,7 @@ def generate_session_no(patient_id: int) -> str:
 def create_session(
     session_data: DiagnosisSessionCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """创建诊断会话"""
     patient = db.query(Patient).filter(Patient.id == session_data.patient_id).first()
@@ -65,7 +66,7 @@ def create_session(
 def get_session(
     session_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_READ)),
 ):
     """获取诊断会话详情（含四诊数据）"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
@@ -90,7 +91,7 @@ def get_session(
 def get_patient_sessions(
     patient_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_READ)),
 ):
     """获取患者的所有诊断会话（含AI诊断结果）"""
     sessions = db.query(DiagnosisSession).filter(
@@ -135,7 +136,7 @@ def save_inspection(
     session_id: int,
     data: InspectionDataCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """保存望诊数据"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
@@ -160,7 +161,7 @@ def save_auscultation(
     session_id: int,
     data: AuscultationDataCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """保存闻诊数据"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
@@ -185,7 +186,7 @@ def save_inquiry(
     session_id: int,
     data: InquiryDataCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """保存问诊数据"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
@@ -210,7 +211,7 @@ def save_palpation(
     session_id: int,
     data: PalpationDataCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """保存切诊数据"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
@@ -234,7 +235,7 @@ def save_palpation(
 def complete_session(
     session_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_UPDATE)),
 ):
     """完成采集，进入诊断阶段"""
     session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()

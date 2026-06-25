@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Body
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, SYSTEM_MAINTENANCE
 from app.models.user import User
 from app.schemas.common import Response
 
@@ -14,7 +15,7 @@ offline_queue: List[Dict] = []
 
 
 @router.get("/status")
-def sync_status(current_user: User = Depends(get_current_user)):
+def sync_status(current_user: User = Depends(require_permissions(SYSTEM_MAINTENANCE))):
     return Response(data={
         "queue_size": len(offline_queue),
         "last_sync": None,
@@ -23,17 +24,17 @@ def sync_status(current_user: User = Depends(get_current_user)):
 
 
 @router.post("/sync")
-def sync_data(data: List[Dict], current_user: User = Depends(get_current_user)):
+def sync_data(data: List[Dict], current_user: User = Depends(require_permissions(SYSTEM_MAINTENANCE))):
     offline_queue.extend(data)
     return Response(message=f"已加入同步队列，当前 {len(offline_queue)} 条待同步")
 
 
 @router.get("/queue")
-def get_queue(current_user: User = Depends(get_current_user)):
+def get_queue(current_user: User = Depends(require_permissions(SYSTEM_MAINTENANCE))):
     return Response(data=offline_queue)
 
 
 @router.delete("/queue")
-def clear_queue(current_user: User = Depends(get_current_user)):
+def clear_queue(current_user: User = Depends(require_permissions(SYSTEM_MAINTENANCE))):
     offline_queue.clear()
     return Response(message="同步队列已清空")

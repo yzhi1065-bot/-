@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, DEVICE_READ, DEVICE_CREATE
 from app.models.user import User
 from app.models.device import Device, DeviceLog
 from app.schemas.device import DeviceRegister, DeviceStatusUpdate, DeviceResponse
@@ -16,7 +17,7 @@ router = APIRouter(prefix="/api/devices", tags=["设备管理"])
 @router.get("", response_model=Response[List[DeviceResponse]])
 def list_devices(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DEVICE_READ)),
 ):
     """获取设备列表"""
     devices = db.query(Device).all()
@@ -27,7 +28,7 @@ def list_devices(
 def register_device(
     data: DeviceRegister,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DEVICE_CREATE)),
 ):
     """注册设备"""
     existing = db.query(Device).filter(Device.serial_no == data.serial_no).first()
@@ -46,7 +47,7 @@ def update_device_status(
     device_id: int,
     status_update: DeviceStatusUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DEVICE_CREATE)),
 ):
     """更新设备状态"""
     device = db.query(Device).filter(Device.id == device_id).first()

@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, AI_DIAGNOSE
 from app.models.user import User
 from app.models.diagnosis import DiagnosisSession
 from app.models.ai_result import AIDiagnosisResult
@@ -18,7 +19,7 @@ router = APIRouter(prefix="/api/ai-diagnosis", tags=["AI诊断"])
 async def run_diagnosis(
     request: AIDiagnosisRequest,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(AI_DIAGNOSE)),
 ):
     """执行AI诊断"""
     session = db.query(DiagnosisSession).filter(
@@ -140,7 +141,7 @@ async def run_diagnosis(
 def get_diagnosis_result(
     session_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(AI_DIAGNOSE)),
 ):
     """获取AI诊断结果"""
     result = db.query(AIDiagnosisResult).filter(
@@ -173,7 +174,7 @@ def review_diagnosis(
     result_id: int,
     review: DiagnosisReview,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(AI_DIAGNOSE)),
 ):
     """医生审核AI诊断结果"""
     result = db.query(AIDiagnosisResult).filter(

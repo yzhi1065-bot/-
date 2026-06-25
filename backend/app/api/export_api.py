@@ -11,6 +11,7 @@ from datetime import datetime, date, timedelta
 from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, STATS_EXPORT
 from app.models.user import User
 from app.models.patient import Patient
 from app.models.diagnosis import DiagnosisSession
@@ -55,7 +56,7 @@ def export_patients_csv(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出患者数据为CSV（带日期筛选）"""
     query = db.query(Patient)
@@ -93,7 +94,7 @@ def export_patients_json(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出患者数据为JSON"""
     query = db.query(Patient)
@@ -128,7 +129,7 @@ def export_prescriptions_csv(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出处方数据为CSV"""
     query = db.query(Prescription)
@@ -168,7 +169,7 @@ def export_prescriptions_json(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出处方数据为JSON"""
     query = db.query(Prescription)
@@ -218,7 +219,7 @@ def export_prescriptions_json(
 def export_pharmacy_csv(
     category: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出药品目录为CSV"""
     query = db.query(Drug).filter(Drug.is_active == True)
@@ -244,7 +245,7 @@ def export_sales_csv(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出销售记录为CSV"""
     query = db.query(Sale)
@@ -274,7 +275,7 @@ def export_sales_json(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出销售记录为JSON"""
     query = db.query(Sale)
@@ -304,7 +305,7 @@ def export_diagnoses_csv(
     date_from: Optional[str] = None,
     date_to: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出诊断记录为CSV"""
     query = db.query(DiagnosisSession)
@@ -339,7 +340,7 @@ def export_diagnoses_csv(
 @router.get("/stats/summary")
 def get_stats_summary(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """获取统计数据摘要"""
     total_patients = db.query(Patient).count()
@@ -364,7 +365,7 @@ def get_stats_summary(
 @router.get("/stats/json")
 def export_stats_json(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出完整统计数据为JSON"""
     from app.services.stats_service import StatsService
@@ -380,7 +381,7 @@ def export_stats_json(
 def export_daily_report(
     report_date: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(STATS_EXPORT)),
 ):
     """导出日报表（CSV格式，Excel兼容）"""
     target_date = date.today()

@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, Depends
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, AI_DIAGNOSE
 from app.models.user import User
 from app.schemas.common import Response
 
@@ -27,7 +28,7 @@ FORMULA_KNOWLEDGE = {
 
 
 @router.get("/diagnosis/{pattern}")
-def get_enhanced(pattern: str, current_user: User = Depends(get_current_user)):
+def get_enhanced(pattern: str, current_user: User = Depends(require_permissions(AI_DIAGNOSE))):
     result = FORMULA_KNOWLEDGE.get(pattern)
     if not result:
         return Response(data={
@@ -38,7 +39,7 @@ def get_enhanced(pattern: str, current_user: User = Depends(get_current_user)):
 
 
 @router.get("/diagnosis/available-patterns")
-def available_patterns(current_user: User = Depends(get_current_user)):
+def available_patterns(current_user: User = Depends(require_permissions(AI_DIAGNOSE))):
     return Response(data={
         "patterns": list(FORMULA_KNOWLEDGE.keys()),
         "count": len(FORMULA_KNOWLEDGE),

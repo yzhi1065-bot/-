@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, DIAGNOSIS_CREATE
 from app.models.user import User
 from app.schemas.common import Response
 from app.services.ai_service import AIService
@@ -34,7 +35,7 @@ class TongueAnalysisRequest(BaseModel):
 @router.post("/upload", response_model=Response)
 async def upload_tongue_image(
     file: UploadFile = File(...),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """上传舌象图片并保存到upload/tongue目录"""
     # 验证文件类型
@@ -73,7 +74,7 @@ async def upload_tongue_image(
 @router.post("/analyze", response_model=Response)
 async def analyze_tongue(
     request: TongueAnalysisRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
 ):
     """分析舌象图片，返回舌质/舌苔/舌形等诊断结果"""
     # 验证图片路径是否存在（仅在有路径时检查）

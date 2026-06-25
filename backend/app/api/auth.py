@@ -6,6 +6,7 @@ from app.core.database import get_db
 from app.core.security import (
     verify_password, get_password_hash, create_access_token, get_current_user,
 )
+from app.core.permissions import require_permissions, USER_READ
 from app.models.user import User
 from app.schemas.user import UserCreate, UserLogin, UserResponse, TokenResponse
 
@@ -61,6 +62,6 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/me", response_model=UserResponse)
-def get_me(current_user: User = Depends(get_current_user)):
+def get_me(current_user: User = Depends(require_permissions(USER_READ))):
     """获取当前用户信息"""
     return current_user

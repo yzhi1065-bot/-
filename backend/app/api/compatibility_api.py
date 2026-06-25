@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, PRESCRIPTION_READ
 from app.models.user import User
 from app.schemas.common import Response
 from app.services.compatibility import check_compatibility
@@ -20,7 +21,7 @@ class CompatibilityCheckRequest(BaseModel):
 @router.post("/check", response_model=Response)
 def check_herb_compatibility(
     request: CompatibilityCheckRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PRESCRIPTION_READ)),
 ):
     """检查处方中的配伍禁忌（十八反、十九畏、孕妇禁忌等）"""
     if not request.herbs:

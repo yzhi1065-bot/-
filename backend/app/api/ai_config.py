@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, AI_CONFIG
 from app.models.user import User
 from app.schemas.common import Response
 
@@ -31,7 +32,7 @@ class AIConfigSchema(BaseModel):
 
 
 @router.get("", response_model=Response)
-def get_config(current_user: User = Depends(get_current_user)):
+def get_config(current_user: User = Depends(require_permissions(AI_CONFIG))):
     """获取AI配置"""
     return Response(data=current_config)
 
@@ -39,7 +40,7 @@ def get_config(current_user: User = Depends(get_current_user)):
 @router.put("", response_model=Response)
 def update_config(
     config: AIConfigSchema,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(AI_CONFIG)),
 ):
     """更新AI配置"""
     current_config.update(config.model_dump(exclude_unset=True))

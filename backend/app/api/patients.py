@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from typing import Optional, List
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, PATIENT_READ, PATIENT_CREATE, PATIENT_UPDATE
 from app.models.user import User
 from app.models.patient import Patient
 from app.schemas.patient import (
@@ -21,7 +22,7 @@ def list_patients(
     page_size: int = Query(20, ge=1, le=100),
     keyword: Optional[str] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_READ)),
 ):
     """获取患者列表"""
     query = db.query(Patient)
@@ -49,7 +50,7 @@ def list_patients(
 def create_patient(
     patient: PatientCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_CREATE)),
 ):
     """新建患者"""
     print(f"收到创建患者请求: {patient.model_dump()}")
@@ -65,7 +66,7 @@ def create_patient(
 def get_patient(
     patient_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_READ)),
 ):
     """获取患者详细信息"""
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
@@ -97,7 +98,7 @@ def update_patient(
     patient_id: int,
     patient_update: PatientUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_UPDATE)),
 ):
     """更新患者信息"""
     patient = db.query(Patient).filter(Patient.id == patient_id).first()

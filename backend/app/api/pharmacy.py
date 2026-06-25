@@ -10,6 +10,7 @@ from fastapi.responses import Response as FastAPIResponse
 from pydantic import BaseModel
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, PHARMACY_READ, PHARMACY_CREATE, PHARMACY_UPDATE, PHARMACY_DELETE
 from app.models.user import User
 from app.models.pharmacy import Drug, DrugCategory, Purchase, Sale
 from app.schemas.common import Response
@@ -76,7 +77,7 @@ def list_drugs(
     sort_by: Optional[str] = None,
     sort_order: Optional[str] = Query("asc"),
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PHARMACY_READ)),
 ):
     query = db.query(Drug).filter(Drug.is_active == True)
     if keyword:
@@ -103,13 +104,13 @@ def list_drugs(
 
 
 @router.get("/drugs/categories")
-def list_categories(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def list_categories(db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     cats = db.query(DrugCategory).order_by(DrugCategory.name).all()
     return Response(data=[{"id": c.id, "name": c.name} for c in cats])
 
 
 @router.get("/drugs/{drug_id}")
-def get_drug(drug_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_drug(drug_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     drug = db.query(Drug).filter(Drug.id == drug_id, Drug.is_active == True).first()
     if not drug:
         raise HTTPException(404, "药品不存在")
@@ -117,7 +118,7 @@ def get_drug(drug_id: int, db: Session = Depends(get_db), current_user: User = D
 
 
 @router.post("/drugs")
-def create_drug(drug: DrugCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_drug(drug: DrugCreate, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_CREATE))):
     if drug.barcode:
         existing = db.query(Drug).filter(Drug.barcode == drug.barcode).first()
         if existing:
@@ -135,7 +136,7 @@ def create_drug(drug: DrugCreate, db: Session = Depends(get_db), current_user: U
 
 
 @router.put("/drugs/{drug_id}")
-def update_drug(drug_id: int, drug: DrugCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def update_drug(drug_id: int, drug: DrugCreate, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_UPDATE))):
     db_drug = db.query(Drug).filter(Drug.id == drug_id).first()
     if not db_drug:
         raise HTTPException(404, "药品不存在")
@@ -149,7 +150,7 @@ def update_drug(drug_id: int, drug: DrugCreate, db: Session = Depends(get_db), c
 
 
 @router.delete("/drugs/{drug_id}")
-def delete_drug(drug_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def delete_drug(drug_id: int, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_DELETE))):
     drug = db.query(Drug).filter(Drug.id == drug_id).first()
     if not drug:
         raise HTTPException(404, "药品不存在")
@@ -159,7 +160,7 @@ def delete_drug(drug_id: int, db: Session = Depends(get_db), current_user: User 
 
 
 @router.get("/drugs/export")
-def export_drugs(category: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def export_drugs(category: Optional[str] = None, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     query = db.query(Drug).filter(Drug.is_active == True)
     if category:
         query = query.filter(Drug.category_name == category)
@@ -179,7 +180,7 @@ def export_drugs(category: Optional[str] = None, db: Session = Depends(get_db), 
 def list_purchases(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100),
                    keyword: Optional[str] = None, date_from: Optional[str] = None, date_to: Optional[str] = None,
                    drug_id: Optional[int] = None, supplier: Optional[str] = None,
-                   db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+                   db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     query = db.query(Purchase)
     if keyword:
         query = query.filter(or_(Purchase.drug_name.ilike(f"%{keyword}%"), Purchase.supplier.ilike(f"%{keyword}%")))
@@ -198,7 +199,7 @@ def list_purchases(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, 
 
 
 @router.post("/purchases")
-def create_purchase(data: dict, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_purchase(data: dict, db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_CREATE))):
     pdate = date.today()
     if data.get("purchase_date"):
         try: pdate = datetime.strptime(data["purchase_date"], "%Y-%m-%d").date()
@@ -221,7 +222,7 @@ def create_purchase(data: dict, db: Session = Depends(get_db), current_user: Use
 @router.get("/sales")
 def list_sales(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=100),
                date_from: Optional[str] = None, date_to: Optional[str] = None,
-               db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+               db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     query = db.query(Sale)
     if date_from: query = query.filter(Sale.sale_date >= date_from)
     if date_to: query = query.filter(Sale.sale_date <= date_to)
@@ -237,7 +238,7 @@ def list_sales(page: int = Query(1, ge=1), page_size: int = Query(20, ge=1, le=1
 
 @router.get("/sales/summary")
 def sales_summary(date_from: Optional[str] = None, date_to: Optional[str] = None,
-                  db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+                  db: Session = Depends(get_db), current_user: User = Depends(require_permissions(PHARMACY_READ))):
     query = db.query(Sale)
     if date_from: query = query.filter(Sale.sale_date >= date_from)
     if date_to: query = query.filter(Sale.sale_date <= date_to)

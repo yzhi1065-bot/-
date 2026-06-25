@@ -8,6 +8,7 @@ from datetime import date
 from pydantic import BaseModel
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, PATIENT_CREATE
 from app.models.user import User
 from app.models.appointment import Appointment, AppointmentStatus
 
@@ -56,7 +57,7 @@ def list_appointments(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_CREATE)),
 ):
     query = db.query(Appointment)
     if status:
@@ -83,7 +84,7 @@ def list_appointments(
 def create_appointment(
     data: AppointmentCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_CREATE)),
 ):
     appt = Appointment(**data.model_dump())
     db.add(appt)
@@ -96,7 +97,7 @@ def create_appointment(
 def cancel_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_CREATE)),
 ):
     appt = db.query(Appointment).filter(Appointment.id == appointment_id).first()
     if not appt:
@@ -110,7 +111,7 @@ def cancel_appointment(
 def complete_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PATIENT_CREATE)),
 ):
     appt = db.query(Appointment).filter(Appointment.id == appointment_id).first()
     if not appt:

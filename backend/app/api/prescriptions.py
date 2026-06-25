@@ -7,6 +7,7 @@ from datetime import date, datetime
 from typing import Optional, List
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.core.permissions import require_permissions, PRESCRIPTION_READ, PRESCRIPTION_CREATE
 from app.models.user import User
 from app.models.prescription import Prescription, PrescriptionItem, TreatmentPlan
 from app.models.pharmacy import Drug, Sale
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/api/prescriptions", tags=["处方管理"])
 def create_prescription(
     data: PrescriptionCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PRESCRIPTION_CREATE)),
 ):
     """创建处方 - 自动创建销售记录并扣减库存"""
     existing = db.query(Prescription).filter(
@@ -109,7 +110,7 @@ def create_prescription(
 def get_prescription_by_session(
     session_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PRESCRIPTION_READ)),
 ):
     """获取诊断会话的处方"""
     prescription = db.query(Prescription).filter(
@@ -148,7 +149,7 @@ def get_prescription_by_session(
 def create_treatment_plan(
     data: TreatmentPlanCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PRESCRIPTION_CREATE)),
 ):
     """创建治疗方案"""
     existing = db.query(TreatmentPlan).filter(
@@ -169,7 +170,7 @@ def create_treatment_plan(
 def get_treatment_plan(
     session_id: int,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_permissions(PRESCRIPTION_READ)),
 ):
     """获取治疗方案"""
     plan = db.query(TreatmentPlan).filter(TreatmentPlan.session_id == session_id).first()
