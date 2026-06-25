@@ -13,6 +13,7 @@ from app.api.offline_api import router as offline_router
 from app.api.stats_api import router as stats_router
 from app.api.compatibility_api import router as compatibility_router
 from app.api.tongue_analysis import router as tongue_router
+from app.api.appointments import router as appointments_router
 
 from app.api.fallback_api import router as fallback_router
 
@@ -21,5 +22,5 @@ __all__ = [
     "ai_diagnosis_router", "prescriptions_router", "devices_router",
     "ai_config_router", "constitution_router", "export_router",
     "pharmacy_router", "ai_enhance_router", "offline_router", "stats_router",
-    "tongue_router", "compatibility_router", "fallback_router",
+    "tongue_router", "compatibility_router", "appointments_router", "fallback_router",
 ]

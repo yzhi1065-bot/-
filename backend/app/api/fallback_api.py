@@ -85,10 +85,6 @@ def formulas(current_user: User = Depends(get_current_user)):
 def knowledge_base(current_user: User = Depends(get_current_user)):
     return ok([])
 
-@router.get("/api/appointments")
-def appointments(current_user: User = Depends(get_current_user)):
-    return ok([])
-
 @router.get("/api/medical-records")
 def patient_records(current_user: User = Depends(get_current_user)):
     return ok([])
@@ -103,18 +99,6 @@ def patient_sessions(patient_id: int, current_user: User = Depends(get_current_u
 
 @router.post("/api/diagnosis/sessions/{session_id}/start")
 def start_session(session_id: int, current_user: User = Depends(get_current_user)):
-    return Response(message="ok")
-
-@router.get("/api/appointments")
-def list_appointments(current_user: User = Depends(get_current_user)):
-    return ok([])
-
-@router.post("/api/appointments")
-def create_appointment(current_user: User = Depends(get_current_user)):
-    return Response(message="ok")
-
-@router.post("/api/appointments/{appointment_id}/cancel")
-def cancel_appointment(appointment_id: int, current_user: User = Depends(get_current_user)):
     return Response(message="ok")
 
 @router.get("/api/consultations")

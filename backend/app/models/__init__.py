@@ -6,6 +6,8 @@ from app.models.prescription import Prescription, PrescriptionItem, TreatmentPla
 from app.models.device import Device, DeviceLog
 from app.models.pharmacy import Drug, Purchase, Sale
 
+from app.models.appointment import Appointment
+
 __all__ = [
     "User", "UserRole",
     "Patient", "PatientBodyConstitution", "MedicalHistory", "Allergy",
@@ -14,4 +16,5 @@ __all__ = [
     "Prescription", "PrescriptionItem", "TreatmentPlan",
     "Device", "DeviceLog",
     "Drug", "Purchase", "Sale",
+    "Appointment",
 ]

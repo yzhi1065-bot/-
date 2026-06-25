@@ -11,7 +11,7 @@ from app.api import (
     ai_diagnosis_router, prescriptions_router, devices_router,
     ai_config_router, constitution_router, export_router, pharmacy_router,
     ai_enhance_router, offline_router, stats_router, tongue_router,
-    compatibility_router, fallback_router,
+    compatibility_router, appointments_router, fallback_router,
 )
 
 Base.metadata.create_all(bind=engine)
@@ -56,6 +56,7 @@ app.include_router(offline_router)
 app.include_router(stats_router)
 app.include_router(tongue_router)
 app.include_router(compatibility_router)
+app.include_router(appointments_router)
 app.include_router(fallback_router)
 
 @app.get("/api/health")
