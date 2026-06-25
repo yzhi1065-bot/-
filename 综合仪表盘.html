@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中医智能诊断系统 · 综合仪表盘</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#020617;color:#e2e8f0;font-family:'JetBrains Mono',monospace;padding:24px;min-height:100vh}
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background-image:radial-gradient(circle at 1px 1px,#1e293b 1px,transparent 0);
+  background-size:40px 40px;z-index:-1;opacity:0.4}
+.container{max-width:1400px;margin:0 auto}
+
+/* Header */
+.header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid #1e293b}
+.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .dot{width:10px;height:10px;border-radius:50%;background:#34d399;animation:pulse 2s infinite}
+.header .meta{color:#64748b;font-size:11px;margin-left:auto;text-align:right}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.4)}50%{opacity:.6;box-shadow:0 0 0 6px rgba(52,211,153,0)}}
+
+/* Section headers */
+.section-title{font-size:14px;font-weight:600;color:#94a3b8;margin:28px 0 16px;display:flex;align-items:center;gap:10px}
+.section-title::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,#1e293b,transparent)}
+
+/* Cards grid */
+.grid-1{display:grid;grid-template-columns:1fr;gap:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px}
+
+/* Card base */
+.card{border:1px solid #1e293b;border-radius:10px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);overflow:hidden}
+.card-header{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #1e293b;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:#64748b}
+.card-header .badge{font-size:9px;padding:2px 8px;border-radius:99px}
+.badge-cyan{background:rgba(8,51,68,.6);color:#22d3ee;border:1px solid rgba(34,211,238,.3)}
+.badge-emerald{background:rgba(6,78,59,.6);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+.badge-violet{background:rgba(76,29,149,.4);color:#a78bfa;border:1px solid rgba(167,139,250,.3)}
+.badge-amber{background:rgba(120,53,15,.3);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+.badge-rose{background:rgba(136,19,55,.4);color:#fb7185;border:1px solid rgba(251,113,133,.3)}
+.card-body{padding:18px}
+
+/* Kanban */
+.kanban-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.kanban-col{border:1px solid #1e293b;border-radius:8px;background:rgba(15,23,42,.3);padding:12px;min-height:200px}
+.kanban-col h3{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64748b;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #1e293b;display:flex;justify-content:space-between}
+.kanban-col h3 span{background:#1e293b;padding:1px 7px;border-radius:99px;font-size:9px;color:#94a3b8}
+.kanban-item{background:rgba(30,41,59,.5);border:1px solid #1e293b;border-radius:6px;padding:8px 10px;margin-bottom:6px;font-size:10px;cursor:default;transition:all .15s}
+.kanban-item:hover{border-color:#334155;background:rgba(30,41,59,.8)}
+.kanban-item .label{display:inline-block;font-size:8px;padding:1px 6px;border-radius:4px;margin-right:6px}
+.kanban-item .name{color:#e2e8f0}
+.kanban-item .sub{color:#64748b;font-size:8px;margin-top:3px}
+
+/* Progress bar */
+.progress-bar{height:4px;background:#1e293b;border-radius:4px;overflow:hidden;margin:6px 0}
+.progress-fill{height:100%;border-radius:4px;transition:width 1s ease}
+.fill-cyan{background:#22d3ee}
+.fill-emerald{background:#34d399}
+.fill-violet{background:#a78bfa}
+.fill-amber{background:#fbbf24}
+
+/* Stat boxes */
+.stat{text-align:center;padding:10px}
+.stat .num{font-size:28px;font-weight:700}
+.stat .num.cyan{color:#22d3ee}
+.stat .num.emerald{color:#34d399}
+.stat .num.violet{color:#a78bfa}
+.stat .num.amber{color:#fbbf24}
+.stat .num.rose{color:#fb7185}
+.stat .label{font-size:9px;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:1px}
+
+/* Architecture SVG area */
+.arch-wrap{padding:4px}
+.arch-bar{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-size:10px}
+.arch-bar .name{width:90px;color:#94a3b8;text-align:right;flex-shrink:0}
+.arch-bar .bar-wrap{flex:1;height:20px;background:#1e293b;border-radius:4px;overflow:hidden;position:relative}
+.arch-bar .bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:8px;color:#0f172a;font-weight:600;min-width:20px}
+.arch-bar .count{width:40px;color:#64748b;font-size:9px;text-align:right}
+
+/* File size bars */
+.file-list{font-size:9px;color:#94a3b8;line-height:1.6}
+.file-list .file-row{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid rgba(30,41,59,.3)}
+.file-list .file-row:last-child{border-bottom:none}
+.file-row .fn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-row .sl{width:30px;text-align:right;color:#64748b}
+.micro-bar{width:60px;height:4px;background:#1e293b;border-radius:2px;overflow:hidden;flex-shrink:0}
+.micro-fill{height:100%;border-radius:2px}
+
+/* Module boxes for architecture */
+.arch-layer{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+.arch-box{border-radius:6px;padding:10px 14px;text-align:center;font-size:9px;border:1.5px solid;min-width:80px;position:relative}
+.arch-box .icon{font-size:16px;margin-bottom:3px}
+.arch-box .title{font-weight:600;margin-bottom:1px;font-size:10px}
+.arch-box .desc{color:#64748b;font-size:8px}
+.arch-box.f{background:rgba(8,51,68,.4);border-color:#22d3ee;color:#cffafe}
+.arch-box.b{background:rgba(6,78,59,.4);border-color:#34d399;color:#d1fae5}
+.arch-box.d{background:rgba(76,29,149,.4);border-color:#a78bfa;color:#ede9fe}
+.arch-box.a{background:rgba(120,53,15,.3);border-color:#fbbf24;color:#fef3c7}
+.arch-box.s{background:rgba(136,19,55,.4);border-color:#fb7185;color:#ffe4e6}
+.arch-box.e{background:rgba(30,41,59,.5);border-color:#94a3b8;color:#cbd5e1}
+.arch-connector{text-align:center;font-size:16px;color:#334155;padding:2px 0}
+.arch-connector svg{vertical-align:middle}
+
+/* Timeline */
+.timeline{position:relative;padding:10px 0}
+.timeline::before{content:'';position:absolute;left:0;top:0;width:2px;height:100%;background:linear-gradient(to bottom,#22d3ee,#34d399,#a78bfa);border-radius:2px}
+.tl-item{padding:8px 0 8px 24px;position:relative}
+.tl-item::before{content:'';position:absolute;left:-4px;top:12px;width:10px;height:10px;border-radius:50%;border:2px solid}
+.tl-item.tl-done::before{background:#22d3ee;border-color:#22d3ee}
+.tl-item.tl-cur::before{background:#fbbf24;border-color:#fbbf24;box-shadow:0 0 6px rgba(251,191,36,.5)}
+.tl-item.tl-idea::before{background:transparent;border-color:#64748b}
+.tl-item .tl-title{font-size:11px;font-weight:600}
+.tl-item .tl-desc{font-size:9px;color:#64748b;margin-top:2px}
+.tl-item.tl-done .tl-title{color:#e2e8f0}
+.tl-item.tl-cur .tl-title{color:#fbbf24}
+.tl-item.tl-idea .tl-title{color:#64748b}
+
+/* Chart */
+.chart-row{display:flex;align-items:center;gap:6px;margin-bottom:4px;font-size:9px}
+.chart-row .lbl{width:70px;text-align:right;color:#94a3b8;flex-shrink:0}
+.chart-row .bar-track{flex:1;height:14px;background:#1e293b;border-radius:3px;overflow:hidden}
+.chart-row .bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-size:7px;color:#0f172a;font-weight:700;min-width:20px}
+
+/* Responsive */
+@media(max-width:900px){.grid-2,.grid-3,.grid-4,.kanban-grid{grid-template-columns:1fr}}
+
+/* Footer */
+.footer{text-align:center;padding:24px 0 8px;font-size:9px;color:#334155;border-top:1px solid #1e293b;margin-top:32px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="dot"></div>
+  <h1>中医智能诊断系统 · 综合仪表盘</h1>
+  <div class="meta">
+    Backend 4.4K loc · Frontend 9.4K loc<br>
+    15 API Routes · 52 Pages · 7 Modules
+  </div>
+</div>
+
+<!-- TOP STATS -->
+<div class="grid-4" style="margin-bottom:24px">
+  <div class="card"><div class="card-body stat">
+    <div class="num emerald">14,650</div>
+    <div class="label">总代码行数</div>
+    <div class="progress-bar" style="margin-top:8px"><div class="progress-fill fill-emerald" style="width:100%"></div></div>
+  </div></div>
+  <div class="card"><div class="card-body stat">
+    <div class="num cyan">52</div>
+    <div class="label">前端页面 / 组件</div>
+    <div class="progress-bar" style="margin-top:8px"><div class="progress-fill fill-cyan" style="width:100%"></div></div>
+  </div></div>
+  <div class="card"><div class="card-body stat">
+    <div class="num violet">15</div>
+    <div class="label">后端 API 路由</div>
+    <div class="progress-bar" style="margin-top:8px"><div class="progress-fill fill-violet" style="width:100%"></div></div>
+  </div></div>
+  <div class="card"><div class="card-body stat">
+    <div class="num amber">7</div>
+    <div class="label">数据模型 / 服务模块</div>
+    <div class="progress-bar" style="margin-top:8px"><div class="progress-fill fill-amber" style="width:100%"></div></div>
+  </div></div>
+</div>
+
+<!-- ===== 1. 系统架构 ===== -->
+<div class="section-title">系统架构 Architecture</div>
+
+<div class="card">
+<div class="card-header"><span class="badge badge-cyan">LAYER</span> 四层架构 · FastAPI + React + SQLite + AI</div>
+<div class="card-body">
+  <!-- Architecture layers -->
+  <div style="text-align:center;padding:12px 0 0;font-size:9px;color:#64748b;letter-spacing:2px;text-transform:uppercase">前端层 Frontend</div>
+  <div class="arch-layer">
+    <div class="arch-box f"><div class="icon">🖥</div><div class="title">React 18</div><div class="desc">Ant Design + Vite</div></div>
+    <div class="arch-box f"><div class="icon">📄</div><div class="title">52 Pages</div><div class="desc">React Router SPA</div></div>
+    <div class="arch-box f"><div class="icon">📊</div><div class="title">ECharts</div><div class="desc">统计图表</div></div>
+  </div>
+
+  <div class="arch-connector">↑ HTTP / REST ↑</div>
+
+  <div style="text-align:center;padding:8px 0;font-size:9px;color:#64748b;letter-spacing:2px;text-transform:uppercase">API 层 Backend</div>
+  <div class="arch-layer">
+    <div class="arch-box b"><div class="icon">⚡</div><div class="title">FastAPI</div><div class="desc">Python 3.11</div></div>
+    <div class="arch-box b"><div class="icon">🔌</div><div class="title">15 路由</div><div class="desc">auth · diagnosis · patients<br>pharmacy · stats · export ...</div></div>
+    <div class="arch-box b"><div class="icon">⚙️</div><div class="title">7 服务</div><div class="desc">AI · Diagnosis · Stats<br>Compatibility · Offline</div></div>
+  </div>
+
+  <div class="arch-connector">↑ SQLAlchemy ORM ↑</div>
+
+  <div style="text-align:center;padding:8px 0;font-size:9px;color:#64748b;letter-spacing:2px;text-transform:uppercase">数据层 Data</div>
+  <div class="arch-layer">
+    <div class="arch-box d"><div class="icon">🗄️</div><div class="title">SQLite</div><div class="desc">7 模型 · SQLAlchemy</div></div>
+    <div class="arch-box d"><div class="icon">📋</div><div class="title">Pydantic</div><div class="desc">7 Schema 校验</div></div>
+  </div>
+
+  <div class="arch-connector">↑ AI Service ↑</div>
+
+  <div style="text-align:center;padding:8px 0;font-size:9px;color:#64748b;letter-spacing:2px;text-transform:uppercase">智能层 AI</div>
+  <div class="arch-layer">
+    <div class="arch-box a"><div class="icon">🧠</div><div class="title">诊断引擎</div><div class="desc">舌诊 · 体质 · AI 辅助</div></div>
+    <div class="arch-box a"><div class="icon">📖</div><div class="title">RAG 检索</div><div class="desc">医案知识库</div></div>
+    <div class="arch-box s"><div class="icon">🔒</div><div class="title">离线模式</div><div class="desc">本地推理</div></div>
+  </div>
+
+  <!-- API list -->
+  <div style="margin-top:18px;border-top:1px solid #1e293b;padding-top:14px">
+    <div style="font-size:10px;color:#64748b;margin-bottom:8px;display:flex;gap:12px;flex-wrap:wrap">
+      <span style="color:#34d399">■</span> auth · patients · diagnosis
+      <span style="color:#22d3ee">■</span> ai_diagnosis · ai_config · ai_enhance
+      <span style="color:#a78bfa">■</span> prescriptions · pharmacy · devices
+      <span style="color:#fbbf24">■</span> stats · export · constitution
+      <span style="color:#fb7185">■</span> offline · tongue · compatibility
+    </div>
+  </div>
+
+  <!-- Tech stack bar -->
+  <div style="border-top:1px solid #1e293b;padding-top:14px;margin-top:4px">
+    <div style="font-size:9px;color:#64748b;margin-bottom:8px">技术栈代码量分布</div>
+    <div class="arch-bar">
+      <div class="name">Frontend</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:64%;background:#22d3ee">9,371</div></div>
+      <div class="count">64%</div>
+    </div>
+    <div class="arch-bar">
+      <div class="name">Backend</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:30%;background:#34d399">4,430</div></div>
+      <div class="count">30%</div>
+    </div>
+    <div class="arch-bar">
+      <div class="name">Desktop</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:3.2%;background:#a78bfa">467</div></div>
+      <div class="count">3%</div>
+    </div>
+    <div class="arch-bar">
+      <div class="name">AI Service</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:2.6%;background:#fbbf24">384</div></div>
+      <div class="count">3%</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 2. 项目进度看板 ===== -->
+<div class="section-title">项目进度 Kanban</div>
+
+<div class="kanban-grid">
+
+<!-- 已完成 -->
+<div class="kanban-col">
+  <h3>✅ 已完成 <span>46</span></h3>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(52,211,153,.2);color:#34d399">核心</span>
+    <span class="name">诊断工作台 + AI 诊断</span>
+    <div class="sub">DiagnosisWorkbench · AIDiagnosisPage · 舌诊分析</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(34,211,238,.2);color:#22d3ee">患者</span>
+    <span class="name">患者管理模块</span>
+    <div class="sub">列表 · 详情 · 病历 · 随访 · 健康档案</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(167,139,250,.2);color:#a78bfa">药房</span>
+    <span class="name">药房管理 + 处方流</span>
+    <div class="sub">药品管理 · 采购 · 销售 · 处方 · 配伍检测</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(251,191,36,.2);color:#fbbf24">统计</span>
+    <span class="name">数据统计 + 报表系统</span>
+    <div class="sub">统计面板 · 图表 · 导出 · 实时大屏</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(34,211,238,.2);color:#22d3ee">患者</span>
+    <span class="name">患者端小程序</span>
+    <div class="sub">首页 · 记录 · 健康 · 草药查询 · MiniApp</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(251,113,133,.2);color:#fb7185">系统</span>
+    <span class="name">系统管理模块</span>
+    <div class="sub">用户管理 · 设置 · 维护 · 审计日志 · 通知</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(52,211,153,.2);color:#34d399">核心</span>
+    <span class="name">AI 配置 + 体质辨识</span>
+    <div class="sub">AI 参数配置 · 离线模式 · 体质分析</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(167,139,250,.2);color:#a78bfa">辅助</span>
+    <span class="name">辅助功能</span>
+    <div class="sub">排班 · 预约 · 转诊 · 保险 · 护理 · 财务 · 设备 · 宣教</div>
+  </div>
+
+  <div class="kanban-item">
+    <span class="label" style="background:rgba(34,211,238,.2);color:#22d3ee">患者</span>
+    <span class="name">患者端就诊页</span>
+    <div class="sub">咨询 · 满意度 · 节气养生 · 健康建议</div>
+  </div>
+</div>
+
+<!-- 进行中 -->
+<div class="kanban-col">
+  <h3>🔄 进行中 <span>4</span></h3>
+
+  <div class="kanban-item" style="border-color:#fbbf24">
+    <span class="label" style="background:rgba(251,191,36,.2);color:#fbbf24">桌面端</span>
+    <span class="name">桌面应用打包</span>
+    <div class="sub">Electron 封装 · 设备管理集成</div>
+    <div class="progress-bar" style="margin-top:6px"><div class="progress-fill fill-amber" style="width:70%"></div></div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#fbbf24">
+    <span class="label" style="background:rgba(251,191,36,.2);color:#fbbf24">CI/CD</span>
+    <span class="name">自动化部署流水线</span>
+    <div class="sub">Docker Compose · GitHub Actions</div>
+    <div class="progress-bar" style="margin-top:6px"><div class="progress-fill fill-amber" style="width:40%"></div></div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#fbbf24">
+    <span class="label" style="background:rgba(251,191,36,.2);color:#fbbf24">AI</span>
+    <span class="name">RAG 知识库完善</span>
+    <div class="sub">更多中医医案 · 检索优化</div>
+    <div class="progress-bar" style="margin-top:6px"><div class="progress-fill fill-amber" style="width:60%"></div></div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#fbbf24">
+    <span class="label" style="background:rgba(251,191,36,.2);color:#fbbf24">测试</span>
+    <span class="name">单元测试 + 集成测试</span>
+    <div class="sub">API 测试 · 前端组件测试</div>
+    <div class="progress-bar" style="margin-top:6px"><div class="progress-fill fill-amber" style="width:30%"></div></div>
+  </div>
+</div>
+
+<!-- 待办 -->
+<div class="kanban-col">
+  <h3>📋 待办 <span>5</span></h3>
+
+  <div class="kanban-item" style="border-color:#64748b">
+    <span class="label" style="background:rgba(100,116,139,.3);color:#94a3b8">优化</span>
+    <span class="name">性能优化 + 缓存</span>
+    <div class="sub">Redis 缓存 · 页面懒加载 · 数据库索引</div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#64748b">
+    <span class="label" style="background:rgba(100,116,139,.3);color:#94a3b8">安全</span>
+    <span class="name">权限系统增强</span>
+    <div class="sub">RBAC 细粒度 · API 访问审计增强</div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#64748b">
+    <span class="label" style="background:rgba(100,116,139,.3);color:#94a3b8">功能</span>
+    <span class="name">远程会诊模块</span>
+    <div class="sub">视频 · 病历共享 · 多方协作</div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#64748b">
+    <span class="label" style="background:rgba(100,116,139,.3);color:#94a3b8">部署</span>
+    <span class="name">多租户支持</span>
+    <div class="sub">多诊所数据隔离</div>
+  </div>
+
+  <div class="kanban-item" style="border-color:#64748b">
+    <span class="label" style="background:rgba(100,116,139,.3);color:#94a3b8">AI</span>
+    <span class="name">多模态诊断增强</span>
+    <div class="sub">舌图识别 · 脉象分析集成</div>
+  </div>
+</div>
+
+</div>
+
+<!-- ===== 3. 模块健康度 ===== -->
+<div class="section-title">代码健康度 Code Health</div>
+
+<div class="grid-2">
+  <!-- Backend module breakdown -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-emerald">BACKEND</span> 各模块代码量</div>
+    <div class="card-body">
+      <div class="chart-row">
+        <span class="lbl">API 路由</span>
+        <div class="bar-track"><div class="bar-fill" style="width:100%;background:#34d399">1,904</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">服务层</span>
+        <div class="bar-track"><div class="bar-fill" style="width:44%;background:#34d399">844</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">数据模型</span>
+        <div class="bar-track"><div class="bar-fill" style="width:34%;background:#34d399">643</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">Schema</span>
+        <div class="bar-track"><div class="bar-fill" style="width:19%;background:#34d399">368</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">其他</span>
+        <div class="bar-track"><div class="bar-fill" style="width:35%;background:#1e293b;color:#64748b">671</div></div>
+      </div>
+      <div style="margin-top:14px;border-top:1px solid #1e293b;padding-top:12px">
+        <div class="file-list">
+          <div class="file-row"><span class="fn">diagnosis.py</span><div class="micro-bar"><div class="micro-fill" style="width:100%;background:#22d3ee;height:4px"></div></div><span class="sl">247</span></div>
+          <div class="file-row"><span class="fn">pharmacy.py</span><div class="micro-bar"><div class="micro-fill" style="width:100%;background:#34d399;height:4px"></div></div><span class="sl">250</span></div>
+          <div class="file-row"><span class="fn">export_api.py</span><div class="micro-bar"><div class="micro-fill" style="width:100%;background:#a78bfa;height:4px"></div></div><span class="sl">426</span></div>
+          <div class="file-row"><span class="fn">ai_diagnosis.py</span><div class="micro-bar"><div class="micro-fill" style="width:53%;background:#34d399;height:4px"></div></div><span class="sl">203</span></div>
+          <div class="file-row"><span class="fn">prescriptions.py</span><div class="micro-bar"><div class="micro-fill" style="width:47%;background:#34d399;height:4px"></div></div><span class="sl">178</span></div>
+          <div class="file-row"><span class="fn">diagnosis (model)</span><div class="micro-bar"><div class="micro-fill" style="width:46%;background:#a78bfa;height:4px"></div></div><span class="sl">177</span></div>
+          <div class="file-row"><span class="fn">ai_service.py</span><div class="micro-bar"><div class="micro-fill" style="width:88%;background:#34d399;height:4px"></div></div><span class="sl">334</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Frontend module breakdown -->
+  <div class="card">
+    <div class="card-header"><span class="badge badge-cyan">FRONTEND</span> 页面按功能域分组</div>
+    <div class="card-body">
+      <div class="chart-row">
+        <span class="lbl">诊断核心</span>
+        <div class="bar-track"><div class="bar-fill" style="width:100%;background:#22d3ee">1,476</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">患者管理</span>
+        <div class="bar-track"><div class="bar-fill" style="width:56%;background:#22d3ee">838</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">药房 &amp; 处方</span>
+        <div class="bar-track"><div class="bar-fill" style="width:56%;background:#22d3ee">836</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">统计 &amp; 报表</span>
+        <div class="bar-track"><div class="bar-fill" style="width:73%;background:#22d3ee">1,077</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">系统管理</span>
+        <div class="bar-track"><div class="bar-fill" style="width:48%;background:#22d3ee">714</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">辅助功能</span>
+        <div class="bar-track"><div class="bar-fill" style="width:100%;background:#1e293b;color:#64748b">2,330</div></div>
+      </div>
+      <div class="chart-row">
+        <span class="lbl">患者端</span>
+        <div class="bar-track"><div class="bar-fill" style="width:30%;background:#22d3ee">459</div></div>
+      </div>
+      <div style="margin-top:10px;font-size:8px;color:#64748b;line-height:1.6">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <span>🧬 诊断: 工作台 539 · AI诊断 447 · 主诉 181 · 处方 394 · 处方流 64</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. 时间线 ===== -->
+<div class="section-title">开发时间线 Timeline</div>
+
+<div class="card">
+<div class="card-header"><span class="badge badge-amber">PHASES</span> 项目阶段演进</div>
+<div class="card-body">
+<div class="grid-2">
+  <div class="timeline">
+
+    <div class="tl-item tl-done">
+      <div class="tl-title">Phase 1 · 骨架搭建</div>
+      <div class="tl-desc">FastAPI 项目初始化 · SQLAlchemy 模型 · React 脚手架 · 登录/认证</div>
+    </div>
+
+    <div class="tl-item tl-done">
+      <div class="tl-title">Phase 2 · 核心业务</div>
+      <div class="tl-desc">诊断工作台 · 患者管理 · 处方管理 · 药房管理 · 基础统计</div>
+    </div>
+
+    <div class="tl-item tl-done">
+      <div class="tl-title">Phase 3 · AI 集成</div>
+      <div class="tl-desc">AI 诊断引擎 · 舌诊分析 · 体质辨识 · RAG 知识库 · 离线模式</div>
+    </div>
+
+    <div class="tl-item tl-done">
+      <div class="tl-title">Phase 4 · 功能完善</div>
+      <div class="tl-desc">50+ 页面 · 导出/报表 · 设备管理 · 患者端 · 医保/保险 · 财务管理</div>
+    </div>
+
+  </div>
+  <div class="timeline">
+
+    <div class="tl-item tl-cur">
+      <div class="tl-title">Phase 5 · 工程化（当前）</div>
+      <div class="tl-desc">桌面端打包 · Docker 部署 · 自动化测试 · CI/CD · RAG 优化</div>
+    </div>
+
+    <div class="tl-item tl-idea">
+      <div class="tl-title">Phase 6 · 性能 &amp; 安全</div>
+      <div class="tl-desc">Redis 缓存 · 权限系统增强 · 数据库优化 · 安全审计</div>
+    </div>
+
+    <div class="tl-item tl-idea">
+      <div class="tl-title">Phase 7 · 高级功能</div>
+      <div class="tl-desc">远程会诊 · 多租户 · 多模态AI(舌图/脉象) · 移动端适配</div>
+    </div>
+
+    <div class="tl-item tl-idea">
+      <div class="tl-title">Phase 8 · 生产部署</div>
+      <div class="tl-desc">负载均衡 · 监控告警 · 灾备 · 合规认证</div>
+    </div>
+
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Info cards -->
+<div class="grid-3" style="margin-top:24px">
+  <div class="card">
+    <div class="card-header"><div class="badge badge-cyan">FRONTEND</div> 技术栈</div>
+    <div class="card-body" style="font-size:9px;color:#94a3b8;line-height:1.8">
+      <div>• React 18 · TypeScript</div>
+      <div>• Ant Design 5.x · ECharts</div>
+      <div>• Vite · React Router v6</div>
+      <div>• Zustand 状态管理</div>
+      <div>• Axios HTTP 客户端</div>
+      <div>• 52 路由页面 · 9,371 行</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="badge badge-emerald">BACKEND</div> 技术栈</div>
+    <div class="card-body" style="font-size:9px;color:#94a3b8;line-height:1.8">
+      <div>• Python 3.11 · FastAPI</div>
+      <div>• SQLAlchemy 2.0 ORM</div>
+      <div>• Pydantic v2 · SQLite</div>
+      <div>• JWT 认证 · OAuth2</div>
+      <div>• 15 API 路由 · 4,430 行</div>
+      <div>• 7 数据模型 · 7 服务模块</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="badge badge-amber">AI</div> 智能能力</div>
+    <div class="card-body" style="font-size:9px;color:#94a3b8;line-height:1.8">
+      <div>• AI 辅助辨证论治</div>
+      <div>• 舌诊图像分析</div>
+      <div>• 中医体质辨识 (9 种)</div>
+      <div>• RAG 医案知识检索</div>
+      <div>• 离线本地推理</div>
+      <div>• 方剂配伍检测</div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  中医智能诊断系统 · 综合仪表盘 · 自动生成于 2026
+</div>
+
+</div>
+</body>
+</html>

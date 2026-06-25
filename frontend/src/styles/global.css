@@ -1,0 +1,359 @@
+/* ═══════════════════════════════════════════════
+   中医智能诊断系统 - 全局样式
+   传统中医美学：檀棕·朱砂·宣纸·水墨
+   ═══════════════════════════════════════════════ */
+
+/* ── 字体引入 ── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+/* ── 色彩系统 ── */
+:root {
+  /* 主色系 */
+  --tcm-primary: #8B4513;        /* 檀棕色 - 主色调 */
+  --tcm-primary-light: #A0522D;  /* 檀棕浅 */
+  --tcm-primary-dark: #5C2E0A;   /* 檀棕深 */
+
+  /* 辅助色系 */
+  --tcm-gold: #D4A574;           /* 杏金色 */
+  --tcm-gold-light: #E8D5C4;     /* 杏金浅 */
+  --tcm-cinnabar: #C0392B;       /* 朱砂红 - 强调 */
+  --tcm-cinnabar-light: #E74C3C;
+
+  /* 背景色系 */
+  --tcm-paper: #F5F0EB;          /* 宣纸白 */
+  --tcm-paper-light: #FAF6F2;    /* 宣纸亮 */
+  --tcm-paper-dark: #EDE5DC;     /* 宣纸暗 */
+
+  /* 文字色系 */
+  --tcm-text: #2C2C2C;           /* 墨色 */
+  --tcm-text-secondary: #8C8C8C; /* 淡墨 */
+  --tcm-text-light: #BFB8AF;     /* 浅墨 */
+
+  /* 功能色 */
+  --tcm-success: #27AE60;        /* 草药绿 */
+  --tcm-warning: #E67E22;        /* 陈皮橙 */
+  --tcm-error: #C0392B;          /* 朱砂 */
+  --tcm-info: #5B8DEF;           /* 青花蓝 */
+
+  /* 阴影 */
+  --tcm-shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.06);
+  --tcm-shadow-md: 0 4px 16px rgba(139, 69, 19, 0.10);
+  --tcm-shadow-lg: 0 8px 32px rgba(139, 69, 19, 0.12);
+
+  /* 圆角 */
+  --tcm-radius-sm: 6px;
+  --tcm-radius-md: 10px;
+  --tcm-radius-lg: 16px;
+}
+
+/* ── 全局重置 ── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background-color: var(--tcm-paper);
+  color: var(--tcm-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Noto Serif SC", "SimSun", "STSong", serif;
+}
+
+/* ── 滚动条 ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--tcm-paper); }
+::-webkit-scrollbar-thumb { background: var(--tcm-gold); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--tcm-primary); }
+
+/* ══════════════════════════════════════
+   Ant Design 覆盖 - TCM主题
+   ══════════════════════════════════════ */
+
+/* Layout */
+.ant-layout {
+  background: var(--tcm-paper) !important;
+}
+
+.ant-layout-sider {
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--tcm-paper-light) 100%) !important;
+  border-right: 1px solid rgba(139, 69, 19, 0.08) !important;
+}
+
+.ant-layout-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(139, 69, 19, 0.06) !important;
+}
+
+/* Card - 宣纸卡片效果 */
+.ant-card {
+  border-radius: var(--tcm-radius-md) !important;
+  border: 1px solid rgba(139, 69, 19, 0.08) !important;
+  box-shadow: var(--tcm-shadow-sm) !important;
+  transition: all 0.3s ease !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.ant-card:hover {
+  box-shadow: var(--tcm-shadow-md) !important;
+  border-color: rgba(139, 69, 19, 0.15) !important;
+}
+
+.ant-card-head {
+  border-bottom: 1px solid rgba(139, 69, 19, 0.08) !important;
+  font-family: "Noto Serif SC", serif !important;
+  font-weight: 600 !important;
+  color: var(--tcm-primary) !important;
+  padding: 16px 20px !important;
+}
+
+/* Menu */
+.ant-menu-item-selected {
+  background: linear-gradient(135deg, rgba(139, 69, 19, 0.10) 0%, rgba(212, 165, 116, 0.10) 100%) !important;
+  color: var(--tcm-primary) !important;
+  font-weight: 500 !important;
+}
+
+.ant-menu-item:hover {
+  color: var(--tcm-primary) !important;
+}
+
+/* Button */
+.ant-btn-primary {
+  background: linear-gradient(135deg, var(--tcm-primary) 0%, var(--tcm-primary-light) 100%) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2) !important;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(135deg, var(--tcm-primary-dark) 0%, var(--tcm-primary) 100%) !important;
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3) !important;
+  transform: translateY(-1px);
+}
+
+.ant-btn {
+  border-radius: var(--tcm-radius-sm) !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Table */
+.ant-table-thead > tr > th {
+  background: var(--tcm-paper) !important;
+  color: var(--tcm-primary) !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid var(--tcm-gold) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: rgba(212, 165, 116, 0.06) !important;
+}
+
+/* Tag */
+.ant-tag {
+  border-radius: 4px !important;
+  font-size: 12px !important;
+}
+
+/* Steps */
+.ant-steps-item-title {
+  font-size: 14px !important;
+}
+
+.ant-steps-item-active .ant-steps-item-title {
+  color: var(--tcm-primary) !important;
+  font-weight: 600 !important;
+}
+
+.ant-steps-item-process .ant-steps-item-icon {
+  background: var(--tcm-primary) !important;
+  border-color: var(--tcm-primary) !important;
+}
+
+/* Form */
+.ant-form-item-label > label {
+  font-weight: 500 !important;
+  color: var(--tcm-text) !important;
+}
+
+/* Modal */
+.ant-modal-header {
+  border-bottom: 1px solid rgba(139, 69, 19, 0.08) !important;
+}
+
+.ant-modal-title {
+  font-family: "Noto Serif SC", serif !important;
+  color: var(--tcm-primary) !important;
+}
+
+/* Alert */
+.ant-alert-info {
+  background: rgba(139, 69, 19, 0.04) !important;
+  border: 1px solid rgba(139, 69, 19, 0.10) !important;
+}
+
+/* Statistic */
+.ant-statistic-title {
+  color: var(--tcm-text-secondary) !important;
+  font-size: 14px !important;
+}
+
+.ant-statistic-content {
+  color: var(--tcm-primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Timeline */
+.ant-timeline-item-head-green {
+  border-color: var(--tcm-success) !important;
+}
+
+/* Tabs */
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--tcm-primary) !important;
+  font-weight: 600 !important;
+}
+
+.ant-tabs-ink-bar {
+  background: var(--tcm-primary) !important;
+}
+
+/* Input focus */
+.ant-input:focus, .ant-input-focused {
+  border-color: var(--tcm-primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1) !important;
+}
+
+.ant-select-focused .ant-select-selector {
+  border-color: var(--tcm-primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.1) !important;
+}
+
+/* Dropdown */
+.ant-dropdown-menu-item:hover {
+  background: rgba(139, 69, 19, 0.06) !important;
+}
+
+/* ══════════════════════════════════════
+   自定义组件样式
+   ══════════════════════════════════════ */
+
+/* 品牌标头 */
+.tcm-brand-title {
+  font-family: "Noto Serif SC", "STSong", serif;
+  font-weight: 900;
+  color: var(--tcm-primary);
+  letter-spacing: 2px;
+}
+
+/* 水墨装饰线 */
+.tcm-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--tcm-gold), transparent);
+  border: none;
+  margin: 16px 0;
+}
+
+/* 统计卡片悬停效果 */
+.tcm-stat-card {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.tcm-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, transparent 50%, rgba(139, 69, 19, 0.03) 50%);
+  border-radius: 0 0 0 80px;
+  transition: all 0.3s ease;
+}
+
+.tcm-stat-card:hover::after {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, transparent 50%, rgba(139, 69, 19, 0.06) 50%);
+}
+
+/* 证型标签 */
+.tcm-pattern-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.tcm-pattern-tag-primary {
+  background: linear-gradient(135deg, #C0392B 0%, #E74C3C 100%);
+  color: white;
+}
+
+.tcm-pattern-tag-secondary {
+  background: var(--tcm-paper);
+  color: var(--tcm-text);
+  border: 1px solid var(--tcm-gold);
+}
+
+/* 加载动画 */
+.tcm-loading {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.tcm-loading-text {
+  margin-top: 24px;
+  font-size: 16px;
+  color: var(--tcm-primary);
+  font-family: "Noto Serif SC", serif;
+}
+
+/* 进度步骤条 */
+.tcm-steps-progress {
+  margin-bottom: 24px;
+}
+
+/* 操作底部栏 */
+.tcm-action-bar {
+  position: sticky;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(139, 69, 19, 0.08);
+  padding: 16px 24px;
+  margin: 24px -24px -24px;
+  border-radius: 0 0 var(--tcm-radius-md) var(--tcm-radius-md);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* 宣纸背景纹理 */
+.tcm-paper-texture {
+  position: relative;
+}
+
+.tcm-paper-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B4513' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .ant-card-head {
+    padding: 12px 16px !important;
+  }
+}
