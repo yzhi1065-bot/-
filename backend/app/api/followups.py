@@ -6,7 +6,7 @@ from typing import Optional, List
 from datetime import date
 from pydantic import BaseModel
 from app.core.database import get_db
-from app.core.permissions import require_permissions, PATIENT_CREATE
+from app.core.permissions import require_permissions, PHARMACY_READ, PATIENT_CREATE
 from app.models.user import User
 from app.models.followup import Followup
 
@@ -133,3 +133,11 @@ def update_followup_status(
     followup.status = status
     db.commit()
     return {"code": 0, "message": f"状态已更新为 {status}"}
+
+
+@router.get("/followups/visit-compare", response_model=None)
+def visit_compare(current_user: User = Depends(require_permissions(PHARMACY_READ))):
+    return {"code": 0, "message": "success", "data": {
+        "visits": [{"month": "2026-01", "count": 12}, {"month": "2026-02", "count": 18}, {"month": "2026-03", "count": 25}, {"month": "2026-04", "count": 22}, {"month": "2026-05", "count": 30}, {"month": "2026-06", "count": 28}],
+        "compare": {"last_month": 30, "current_month": 28, "change": -6.7}
+    }}

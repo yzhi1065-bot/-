@@ -19,7 +19,7 @@ export default function FollowupPage2() {
 
   useEffect(() => {
     setLoading(true)
-    request.get('/followups').then((res: any) => {
+    request.get('/api/followups').then((res: any) => {
       const d = res.data || res
       if (d.list) setFollowups(d.list)
       if (d.stats) setStats(d.stats)

@@ -231,6 +231,21 @@ def save_palpation(
     return Response(message="切诊数据保存成功")
 
 
+@router.post("/sessions/{session_id}/start", response_model=Response)
+def start_session(
+    session_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_CREATE)),
+):
+    """开始诊疗"""
+    session = db.query(DiagnosisSession).filter(DiagnosisSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="就诊记录不存在")
+    session.status = "in_progress"
+    db.commit()
+    return Response(message="开始诊疗")
+
+
 @router.post("/sessions/{session_id}/complete", response_model=Response)
 def complete_session(
     session_id: int,
