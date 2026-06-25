@@ -223,8 +223,8 @@ def export_pharmacy_csv(
     """导出药品目录为CSV"""
     query = db.query(Drug).filter(Drug.is_active == True)
     if category:
-        query = query.filter(Drug.category == category)
-    drugs = query.order_by(Drug.category, Drug.name).all()
+        query = query.filter(Drug.category_name == category)
+    drugs = query.order_by(Drug.category_name, Drug.name).all()
 
     output = io.StringIO()
     writer = csv.writer(output)

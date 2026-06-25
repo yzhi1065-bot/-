@@ -70,3 +70,15 @@ class StatsService:
             ).count()
             results.append({"date": str(d), "visits": count})
         return results
+
+    @staticmethod
+    def get_full_report(db) -> dict:
+        total_patients = db.query(Patient).count()
+        total_sessions = db.query(DiagnosisSession).count()
+        return {
+            "total_patients": total_patients,
+            "total_sessions": total_sessions,
+            "today_visits": db.query(DiagnosisSession).filter(
+                func.date(DiagnosisSession.created_at) == date.today()
+            ).count(),
+        }
