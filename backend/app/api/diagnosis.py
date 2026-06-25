@@ -1,6 +1,6 @@
 """四诊采集接口"""
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
 from app.core.database import get_db
@@ -27,6 +27,23 @@ def generate_session_no(patient_id: int) -> str:
     from datetime import datetime
     now = datetime.now()
     return f"TCM{now.strftime('%Y%m%d%H%M%S')}{patient_id:04d}"
+
+
+@router.get("/sessions", response_model=None)
+def list_sessions(
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    status: Optional[str] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_permissions(DIAGNOSIS_READ)),
+):
+    """获取诊断会话列表"""
+    query = db.query(DiagnosisSession)
+    if status:
+        query = query.filter(DiagnosisSession.status == status)
+    total = query.count()
+    items = query.order_by(DiagnosisSession.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
+    return {"code": 0, "message": "success", "data": {"items": items, "total": total}}
 
 
 @router.post("/sessions", response_model=Response[DiagnosisSessionResponse])

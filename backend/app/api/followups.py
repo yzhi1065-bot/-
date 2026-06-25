@@ -76,6 +76,14 @@ def create_followup(
     return {"code": 0, "message": "随访记录已创建", "data": followup}
 
 
+
+
+@router.get("/followup-stats/visits", response_model=None)
+def visit_compare(current_user: User = Depends(require_permissions(PHARMACY_READ))):
+    return {"code": 0, "message": "success", "data": {
+        "visits": [{"month": "2026-01", "count": 12}, {"month": "2026-02", "count": 18}, {"month": "2026-03", "count": 25}, {"month": "2026-04", "count": 22}, {"month": "2026-05", "count": 30}, {"month": "2026-06", "count": 28}],
+        "compare": {"last_month": 30, "current_month": 28, "change": -6.7}
+    }}
 @router.get("/followups/{followup_id}", response_model=None)
 def get_followup(
     followup_id: int,
@@ -133,11 +141,3 @@ def update_followup_status(
     followup.status = status
     db.commit()
     return {"code": 0, "message": f"状态已更新为 {status}"}
-
-
-@router.get("/followups/visit-compare", response_model=None)
-def visit_compare(current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return {"code": 0, "message": "success", "data": {
-        "visits": [{"month": "2026-01", "count": 12}, {"month": "2026-02", "count": 18}, {"month": "2026-03", "count": 25}, {"month": "2026-04", "count": 22}, {"month": "2026-05", "count": 30}, {"month": "2026-06", "count": 28}],
-        "compare": {"last_month": 30, "current_month": 28, "change": -6.7}
-    }}

@@ -27,7 +27,7 @@ export default function FollowupPage() {
 
   useEffect(() => {
     setLoading(true)
-    request.get('/api/followups/visit-compare').then((res: any) => {
+    request.get('/api/followup-stats/visits').then((res: any) => {
       const d = res.data || res
       if (d.symptoms) setVisitCompareData(d.symptoms)
       if (d.history) setVisitHistory(d.history)
