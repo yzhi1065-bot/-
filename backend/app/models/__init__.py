@@ -10,6 +10,7 @@ from app.models.appointment import Appointment
 from app.models.followup import Followup
 from app.models.nursing import NursingRecord
 from app.models.schedule import Schedule
+from app.models.drug_price import DrugPrice
 
 __all__ = [
     "User", "UserRole",
@@ -20,4 +21,5 @@ __all__ = [
     "Device", "DeviceLog",
     "Drug", "Purchase", "Sale",
     "Appointment", "Followup", "NursingRecord", "Schedule",
+    "DrugPrice",
 ]

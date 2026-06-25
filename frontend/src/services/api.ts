@@ -29,4 +29,10 @@ export const API_ENDPOINTS = {
   STATS_TOP_HERBS: '/api/stats/top-herbs',
   STATS_PATTERNS: '/api/stats/patterns',
   STATS_DRUGS: '/api/stats/drugs',
+
+  // 进货管理
+  PURCHASES: '/api/pharmacy/purchases',
+  PURCHASE_DETAIL: (id: number) => `/api/pharmacy/purchases/${id}`,
+  DRUGS: '/api/pharmacy/drugs',
+  PRICES: '/api/pharmacy/prices',
 } as const
