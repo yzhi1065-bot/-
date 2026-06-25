@@ -83,6 +83,16 @@ def notifications(current_user: User = Depends(require_permissions(PHARMACY_READ
     ])
 
 
+@router.put("/api/notifications/{notification_id}/read")
+def mark_read(notification_id: int, current_user: User = Depends(require_permissions(PHARMACY_READ))):
+    return Response(message="已标记已读")
+
+
+@router.put("/api/notifications/read-all")
+def mark_all_read(current_user: User = Depends(require_permissions(PHARMACY_READ))):
+    return Response(message="全部已读")
+
+
 @router.get("/api/messages")
 def messages(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([

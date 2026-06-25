@@ -26,7 +26,7 @@ export default function AIConfigPage() {
       localStorage.setItem('ai_config', JSON.stringify(values))
       // 也发到后端保存
       try {
-        await request.put('/ai-config', values)
+        await request.put('/api/ai-config', values)
       } catch {}
       message.success('配置已保存！选择"在线模式"后，诊断将使用真实AI')
     } catch (e) {

@@ -33,7 +33,7 @@ export default function NotificationPage() {
 
   const handleMarkRead = async (id: number) => {
     try {
-      await request.put('/notifications/' + id + '/read')
+      await request.put('/api/notifications/' + id + '/read')
       setNotifications(notifications.map(n => n.id === id ? { ...n, read: true } : n))
       message.success('暂无新通知')
     } catch {
@@ -43,7 +43,7 @@ export default function NotificationPage() {
 
   const handleMarkAllRead = async () => {
     try {
-      await request.put('/notifications/read-all')
+      await request.put('/api/notifications/read-all')
       setNotifications(notifications.map(n => ({ ...n, read: true })))
       message.success('暂无新通知?')
     } catch {
