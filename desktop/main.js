@@ -28,7 +28,9 @@ function createWindow() {
     mainWindow.loadURL('http://localhost:3000')
     mainWindow.webContents.openDevTools()
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../frontend/dist', 'index.html'))
+    // 生产模式：加载打包的前端资源
+    const distPath = path.join(process.resourcesPath, 'frontend-dist', 'index.html')
+    mainWindow.loadFile(distPath)
   }
 }
 
