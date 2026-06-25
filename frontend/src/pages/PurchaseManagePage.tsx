@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, Table, Button, Input, Space, Modal, Form, InputNumber, DatePicker, message, Typography, Select, Tag, Divider, Empty, Spin, Tooltip } from 'antd'
-import { PlusOutlined, SearchOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons'
+import { Card, Table, Button, Input, Space, Modal, Form, InputNumber, DatePicker, message, Typography, Select, Tag, Divider, Empty, Spin, Tooltip, Upload } from 'antd'
+import { PlusOutlined, SearchOutlined, DollarOutlined, ShopOutlined, UploadOutlined } from '@ant-design/icons'
 import request from '../services/http'
 import dayjs from 'dayjs'
 
@@ -288,6 +288,27 @@ export default function PurchaseManagePage() {
           <Input.Search placeholder="搜索药品/供货单位/批号" value={keyword}
             onChange={(e) => setKeyword(e.target.value)} onSearch={() => { setPage(1); loadData() }}
             style={{ width: 250 }} />
+          <Upload
+            accept=".xlsx"
+            showUploadList={false}
+            customRequest={({ file, onSuccess, onError }) => {
+              const formData = new FormData()
+              formData.append('file', file as Blob)
+              request.post('/api/pharmacy/purchases/import', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+              }).then(() => {
+                message.success('Excel 导入成功')
+                loadData()
+                onSuccess?.(null)
+              }).catch((e: any) => {
+                console.warn('导入失败', e)
+                message.error('Excel 导入失败，请检查文件格式')
+                onError?.(e)
+              })
+            }}
+          >
+            <Button icon={<UploadOutlined />}>导入Excel</Button>
+          </Upload>
           <Button type="primary" icon={<PlusOutlined />} onClick={openAddModal}>
             新增进货
           </Button>

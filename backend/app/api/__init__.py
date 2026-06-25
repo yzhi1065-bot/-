@@ -18,6 +18,7 @@ from app.api.followups import router as followups_router
 from app.api.nursing import router as nursing_router
 from app.api.schedules import router as schedules_router
 from app.api.pharmacy_price import router as pharmacy_price_router
+from app.api.pharmacy_import import router as pharmacy_import_router
 
 from app.api.fallback_api import router as fallback_router
 
@@ -29,5 +30,6 @@ __all__ = [
     "tongue_router", "compatibility_router", "appointments_router",
     "followups_router", "nursing_router", "schedules_router",
     "pharmacy_price_router",
+    "pharmacy_import_router",
     "fallback_router",
 ]
