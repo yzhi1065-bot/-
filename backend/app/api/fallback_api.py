@@ -153,16 +153,6 @@ def patient_search(current_user: User = Depends(require_permissions(PHARMACY_REA
     return ok([])
 
 
-@router.get("/api/diagnosis/patients/{patient_id}/sessions")
-def patient_sessions(patient_id: int, current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return ok([])
-
-
-@router.post("/api/diagnosis/sessions/{session_id}/start")
-def start_session(session_id: int, current_user: User = Depends(require_permissions(PHARMACY_READ))):
-    return Response(message="ok")
-
-
 @router.get("/api/consultations")
 def consultations(current_user: User = Depends(require_permissions(PHARMACY_READ))):
     return ok([])

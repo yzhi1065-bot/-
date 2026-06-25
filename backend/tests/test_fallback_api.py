@@ -115,16 +115,6 @@ class TestFallbackEndpoints:
         response = client.get("/api/patient-search", headers=auth_headers)
         assert response.status_code == 200
 
-    def test_diagnosis_patient_sessions(self, client: TestClient, auth_headers: dict):
-        """获取诊断患者会话"""
-        response = client.get("/api/diagnosis/patients/1/sessions", headers=auth_headers)
-        assert response.status_code == 200
-
-    def test_start_session(self, client: TestClient, auth_headers: dict):
-        """开始诊断会话"""
-        response = client.post("/api/diagnosis/sessions/1/start", headers=auth_headers)
-        assert response.status_code == 200
-
     def test_create_appointment(self, client: TestClient, auth_headers: dict):
         """创建预约"""
         response = client.post("/api/appointments", json={}, headers=auth_headers)

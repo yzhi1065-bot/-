@@ -48,7 +48,7 @@ class AppointmentListOut(BaseModel):
     total: int
 
 
-@router.get("/appointments", response_model=dict)
+@router.get("/appointments", response_model=None)
 def list_appointments(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -80,7 +80,7 @@ def list_appointments(
     return {"code": 0, "message": "success", "data": {"items": items, "total": total}}
 
 
-@router.post("/appointments", response_model=dict)
+@router.post("/appointments", response_model=None)
 def create_appointment(
     data: AppointmentCreate,
     db: Session = Depends(get_db),
@@ -93,7 +93,7 @@ def create_appointment(
     return {"code": 0, "message": "预约成功", "data": appt}
 
 
-@router.post("/appointments/{appointment_id}/cancel", response_model=dict)
+@router.post("/appointments/{appointment_id}/cancel", response_model=None)
 def cancel_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),
@@ -107,7 +107,7 @@ def cancel_appointment(
     return {"code": 0, "message": "已取消"}
 
 
-@router.post("/appointments/{appointment_id}/complete", response_model=dict)
+@router.post("/appointments/{appointment_id}/complete", response_model=None)
 def complete_appointment(
     appointment_id: int,
     db: Session = Depends(get_db),

@@ -31,7 +31,7 @@ class FollowupUpdate(BaseModel):
     satisfaction: Optional[int] = None
 
 
-@router.get("/followups", response_model=dict)
+@router.get("/followups", response_model=None)
 def list_followups(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -63,7 +63,7 @@ def list_followups(
     return {"code": 0, "message": "success", "data": {"items": items, "total": total}}
 
 
-@router.post("/followups", response_model=dict)
+@router.post("/followups", response_model=None)
 def create_followup(
     data: FollowupCreate,
     db: Session = Depends(get_db),
@@ -76,7 +76,7 @@ def create_followup(
     return {"code": 0, "message": "随访记录已创建", "data": followup}
 
 
-@router.get("/followups/{followup_id}", response_model=dict)
+@router.get("/followups/{followup_id}", response_model=None)
 def get_followup(
     followup_id: int,
     db: Session = Depends(get_db),
@@ -88,7 +88,7 @@ def get_followup(
     return {"code": 0, "message": "success", "data": followup}
 
 
-@router.put("/followups/{followup_id}", response_model=dict)
+@router.put("/followups/{followup_id}", response_model=None)
 def update_followup(
     followup_id: int,
     data: FollowupUpdate,
@@ -106,7 +106,7 @@ def update_followup(
     return {"code": 0, "message": "随访记录已更新", "data": followup}
 
 
-@router.delete("/followups/{followup_id}", response_model=dict)
+@router.delete("/followups/{followup_id}", response_model=None)
 def delete_followup(
     followup_id: int,
     db: Session = Depends(get_db),
@@ -120,7 +120,7 @@ def delete_followup(
     return {"code": 0, "message": "已删除"}
 
 
-@router.post("/followups/{followup_id}/status", response_model=dict)
+@router.post("/followups/{followup_id}/status", response_model=None)
 def update_followup_status(
     followup_id: int,
     status: str = Query(..., description="目标状态: 待随访/已完成/已取消"),

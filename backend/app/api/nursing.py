@@ -27,7 +27,7 @@ class NursingUpdate(BaseModel):
     status: Optional[str] = None
 
 
-@router.get("/nursing", response_model=dict)
+@router.get("/nursing", response_model=None)
 def list_nursing_records(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -48,7 +48,7 @@ def list_nursing_records(
     return {"code": 0, "message": "success", "data": {"items": items, "total": total}}
 
 
-@router.post("/nursing", response_model=dict)
+@router.post("/nursing", response_model=None)
 def create_nursing_record(
     data: NursingCreate,
     db: Session = Depends(get_db),
@@ -61,7 +61,7 @@ def create_nursing_record(
     return {"code": 0, "message": "护理记录已创建", "data": record}
 
 
-@router.get("/nursing/{record_id}", response_model=dict)
+@router.get("/nursing/{record_id}", response_model=None)
 def get_nursing_record(
     record_id: int,
     db: Session = Depends(get_db),
@@ -73,7 +73,7 @@ def get_nursing_record(
     return {"code": 0, "message": "success", "data": record}
 
 
-@router.put("/nursing/{record_id}", response_model=dict)
+@router.put("/nursing/{record_id}", response_model=None)
 def update_nursing_record(
     record_id: int,
     data: NursingUpdate,
@@ -91,7 +91,7 @@ def update_nursing_record(
     return {"code": 0, "message": "护理记录已更新", "data": record}
 
 
-@router.delete("/nursing/{record_id}", response_model=dict)
+@router.delete("/nursing/{record_id}", response_model=None)
 def delete_nursing_record(
     record_id: int,
     db: Session = Depends(get_db),

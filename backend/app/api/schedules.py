@@ -29,7 +29,7 @@ class ScheduleUpdate(BaseModel):
     location: Optional[str] = None
 
 
-@router.get("/schedules", response_model=dict)
+@router.get("/schedules", response_model=None)
 def list_schedules(
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -53,7 +53,7 @@ def list_schedules(
     return {"code": 0, "message": "success", "data": {"items": items, "total": total}}
 
 
-@router.post("/schedules", response_model=dict)
+@router.post("/schedules", response_model=None)
 def create_schedule(
     data: ScheduleCreate,
     db: Session = Depends(get_db),
@@ -66,7 +66,7 @@ def create_schedule(
     return {"code": 0, "message": "排班已创建", "data": schedule}
 
 
-@router.get("/schedules/{schedule_id}", response_model=dict)
+@router.get("/schedules/{schedule_id}", response_model=None)
 def get_schedule(
     schedule_id: int,
     db: Session = Depends(get_db),
@@ -78,7 +78,7 @@ def get_schedule(
     return {"code": 0, "message": "success", "data": schedule}
 
 
-@router.put("/schedules/{schedule_id}", response_model=dict)
+@router.put("/schedules/{schedule_id}", response_model=None)
 def update_schedule(
     schedule_id: int,
     data: ScheduleUpdate,
@@ -96,7 +96,7 @@ def update_schedule(
     return {"code": 0, "message": "排班已更新", "data": schedule}
 
 
-@router.delete("/schedules/{schedule_id}", response_model=dict)
+@router.delete("/schedules/{schedule_id}", response_model=None)
 def delete_schedule(
     schedule_id: int,
     db: Session = Depends(get_db),
