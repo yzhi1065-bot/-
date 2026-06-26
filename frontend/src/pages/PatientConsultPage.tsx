@@ -17,7 +17,9 @@ export default function PatientConsultPage() {
       const values = await basicForm.validateFields()
       setBasicData(values)
       setCurrentStep(1)
-    } catch { }
+    } catch {
+      message.error('操作失败，请重试')
+    }
   }
 
   const submitAll = async () => {

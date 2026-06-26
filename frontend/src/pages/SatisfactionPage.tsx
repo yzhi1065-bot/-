@@ -25,7 +25,9 @@ export default function SatisfactionPage() {
         const d = res?.data || res
         if (d?.list) setRecentFeedbacks(d.list)
       }).catch(() => {})
-    } catch (e) {}
+    } catch (e) {
+      msg.error('操作失败，请重试')
+    }
   }, [])
 
   const handleSubmit = () => {

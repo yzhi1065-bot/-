@@ -11,7 +11,8 @@ from datetime import datetime, date, timedelta
 from typing import Optional
 from app.core.database import get_db
 from app.core.security import get_current_user
-from app.core.permissions import require_permissions, STATS_EXPORT
+from app.core.permissions import require_permissions, PATIENT_READ, STATS_EXPORT
+from app.core.encryption import decrypt_id_card
 from app.models.user import User
 from app.models.patient import Patient
 from app.models.diagnosis import DiagnosisSession
@@ -82,7 +83,7 @@ def export_patients_csv(
         writer.writerow([
             p.id, p.name,
             "男" if p.gender == "male" else "女" if p.gender == "female" else "",
-            p.age or "", p.phone or "", p.id_card or "", p.address or "",
+            p.age or "", p.phone or "", decrypt_id_card(p.id_card) or "", p.address or "",
             p.chief_complaint or "", p.past_illness or "", allergy_str,
             p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "",
         ])
@@ -111,7 +112,7 @@ def export_patients_json(
     data = [
         {
             "id": p.id, "name": p.name, "gender": p.gender, "age": p.age,
-            "phone": p.phone, "id_card": p.id_card, "address": p.address,
+            "phone": p.phone, "id_card": decrypt_id_card(p.id_card), "address": p.address,
             "chief_complaint": p.chief_complaint,
             "past_history": p.past_illness,
             "created_at": p.created_at.strftime("%Y-%m-%d %H:%M") if p.created_at else "",

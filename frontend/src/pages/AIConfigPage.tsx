@@ -15,10 +15,11 @@ export default function AIConfigPage() {
     if (saved) {
       try {
         form.setFieldsValue(JSON.parse(saved))
-      } catch {}
+      } catch {
+        message.error('操作失败，请重试')
+      }
     }
   }, [])
-
   const handleSave = async (values: any) => {
     setSaving(true)
     try {
@@ -27,7 +28,9 @@ export default function AIConfigPage() {
       // 也发到后端保存
       try {
         await request.put('/api/ai-config', values)
-      } catch {}
+      } catch {
+        message.error('操作失败，请重试')
+      }
       message.success('配置已保存！选择"在线模式"后，诊断将使用真实AI')
     } catch (e) {
       message.error('保存失败')

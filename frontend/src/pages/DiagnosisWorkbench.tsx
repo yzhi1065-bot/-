@@ -47,7 +47,7 @@ export default function DiagnosisWorkbench() {
       setSessionId(res.data.id)
       message.success('诊断会话已创建')
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     }
   }
 
@@ -58,7 +58,7 @@ export default function DiagnosisWorkbench() {
       setPatients(res.data?.items || [])
       setPatientModal(true)
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     }
   }
 

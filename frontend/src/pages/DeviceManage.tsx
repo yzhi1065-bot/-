@@ -18,7 +18,7 @@ export default function DeviceManage() {
       const res: any = await request.get(API_ENDPOINTS.DEVICES)
       setDevices(res.data || [])
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -36,7 +36,7 @@ export default function DeviceManage() {
       form.resetFields()
       loadDevices()
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     }
   }
 

@@ -41,7 +41,13 @@ init_db()
 
 app = FastAPI(title=settings.APP_NAME, version=settings.VERSION, description="中医智能诊断系统后端服务", docs_url="/api/docs", redoc_url="/api/redoc")
 
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.CORS_ORIGINS.split(",") if settings.CORS_ORIGINS else ["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth_router)
 app.include_router(patients_router)

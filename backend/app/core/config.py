@@ -22,8 +22,18 @@ class Settings(BaseSettings):
     REDIS_URL: str = ""
 
     # JWT
-    SECRET_KEY: str = "your-secret-key-change-in-production"
+    SECRET_KEY: str = ""  # 必须从环境变量 SECRET_KEY 读取
     ALGORITHM: str = "HS256"
+
+    # CORS
+    CORS_ORIGINS: str = "http://localhost:3000"  # 逗号分隔
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if not self.SECRET_KEY:
+            raise ValueError(
+                "SECRET_KEY 环境变量未设置！请在 .env 文件中设置 SECRET_KEY，或通过环境变量导出。"
+            )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 480  # 8小时
 
     # 文件存储

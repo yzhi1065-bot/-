@@ -6,6 +6,7 @@ from typing import Optional, List
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.core.permissions import require_permissions, PATIENT_READ, PATIENT_CREATE, PATIENT_UPDATE
+from app.core.encryption import encrypt_id_card, decrypt_id_card
 from app.models.user import User
 from app.models.patient import Patient
 from app.schemas.patient import (
@@ -54,7 +55,10 @@ def create_patient(
 ):
     """新建患者"""
     print(f"收到创建患者请求: {patient.model_dump()}")
-    db_patient = Patient(**patient.model_dump(exclude_unset=True))
+    patient_data = patient.model_dump(exclude_unset=True)
+    if patient_data.get("id_card"):
+        patient_data["id_card"] = encrypt_id_card(patient_data["id_card"])
+    db_patient = Patient(**patient_data)
     db_patient.created_by = current_user.id
     db.add(db_patient)
     db.commit()
@@ -80,7 +84,7 @@ def get_patient(
     data = PatientDetailResponse(
         **PatientResponse.model_validate(patient).model_dump(),
         birth_date=patient.birth_date,
-        id_card=patient.id_card,
+        id_card=decrypt_id_card(patient.id_card) if patient.id_card else None,
         occupation=patient.occupation,
         emergency_contact=patient.emergency_contact,
         emergency_phone=patient.emergency_phone,

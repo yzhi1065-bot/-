@@ -42,7 +42,7 @@ export default function PrescriptionPage() {
       if (presRes) setPrescription((presRes as any).data)
       if (aiRes) setAiResult((aiRes as any).data)
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     } finally {
       setLoading(false)
     }

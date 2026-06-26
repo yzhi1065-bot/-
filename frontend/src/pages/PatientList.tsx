@@ -25,7 +25,7 @@ export default function PatientList() {
       setData(res.data?.items || [])
       setTotal(res.data?.total || 0)
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     } finally {
       setLoading(false)
     }
@@ -42,7 +42,6 @@ export default function PatientList() {
 
   const handleCreate = async (values: any) => {
     try {
-      // 只发送后端接受的字段
       const payload: any = { name: values.name }
       if (values.gender) payload.gender = values.gender
       if (values.phone) payload.phone = values.phone
@@ -53,7 +52,7 @@ export default function PatientList() {
       form.resetFields()
       loadData()
     } catch (e) {
-      // ignore
+      message.error('操作失败，请重试')
     }
   }
 

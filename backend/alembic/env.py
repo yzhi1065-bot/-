@@ -1,0 +1,82 @@
+"""Alembic 环境配置 - 支持 SQLite 和 PostgreSQL"""
+
+from logging.config import fileConfig
+
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
+from alembic import context
+
+# Alembic Config object
+config = context.config
+
+# 日志配置
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+# ── 导入应用模型 ──
+from app.core.database import Base  # noqa: E402
+from app.core.config import settings  # noqa: E402
+
+# 自动检测所有模型，确保它们被注册到 Base.metadata
+# (通过 __init__.py 批量导入)
+from app.models import (  # noqa: E402, F401
+    User, UserRole,
+    Patient, PatientBodyConstitution, MedicalHistory, Allergy,
+    DiagnosisSession, InspectionData, AuscultationData, InquiryData, PalpationData,
+    AIDiagnosisResult,
+    Prescription, PrescriptionItem, TreatmentPlan,
+    Device, DeviceLog,
+    Drug, Purchase, Sale,
+    Appointment, Followup, NursingRecord, Schedule,
+    DrugPrice,
+)
+
+target_metadata = Base.metadata
+
+# 从 settings 读取数据库 URL
+database_url = settings.DATABASE_URL
+is_sqlite = "sqlite" in database_url
+
+
+def run_migrations_offline() -> None:
+    """离线模式运行迁移"""
+    context.configure(
+        url=database_url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        dialect_opts={"paramstyle": "named"},
+    )
+    with context.begin_transaction():
+        context.run_migrations()
+
+
+def run_migrations_online() -> None:
+    """在线模式运行迁移"""
+    # 为 SQLite 配置 connect_args
+    connect_args = {}
+    if is_sqlite:
+        connect_args["check_same_thread"] = False
+
+    configuration = config.get_section(config.config_ini_section, {})
+    configuration["sqlalchemy.url"] = database_url
+
+    connectable = engine_from_config(
+        configuration,
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+        connect_args=connect_args,
+    )
+
+    with connectable.connect() as connection:
+        context.configure(
+            connection=connection, target_metadata=target_metadata
+        )
+        with context.begin_transaction():
+            context.run_migrations()
+
+
+if context.is_offline_mode():
+    run_migrations_offline()
+else:
+    run_migrations_online()
