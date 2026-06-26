@@ -6,6 +6,17 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
+import enum
+
+
+class PrescriptionStatus(str, enum.Enum):
+    DRAFT = "draft"                 # 草稿
+    PENDING_AUDIT = "pending_audit"  # 待审核
+    APPROVED = "approved"           # 审核通过
+    REJECTED = "rejected"           # 审核驳回
+    PAID = "paid"                   # 已收费
+    DISPENSING = "dispensing"       # 发药中
+    DISPENSED = "dispensed"         # 已发药
 
 
 class Prescription(Base):
@@ -26,10 +37,21 @@ class Prescription(Base):
     total_days = Column(Integer)               # 总天数
     daily_doses = Column(Integer, default=1)   # 每日剂量
 
-    # 状态
-    status = Column(String(20), default="draft")  # draft/active/completed/stopped
+    # 状态流转 (draft → pending_audit → approved/rejected → paid → dispensing → dispensed)
+    status = Column(String(20), default=PrescriptionStatus.DRAFT.value)
     doctor_signature = Column(String(100))
     signed_at = Column(DateTime)
+
+    # 审核信息
+    audit_by = Column(Integer, ForeignKey("users.id"))
+    audit_at = Column(DateTime)
+    audit_comment = Column(Text)
+
+    # 收费信息
+    paid_at = Column(DateTime)
+
+    # 发药信息
+    dispensed_at = Column(DateTime)
 
     notes = Column(Text)
     created_at = Column(DateTime, server_default=func.now())

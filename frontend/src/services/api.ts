@@ -35,4 +35,13 @@ export const API_ENDPOINTS = {
   PURCHASE_DETAIL: (id: number) => `/api/pharmacy/purchases/${id}`,
   DRUGS: '/api/pharmacy/drugs',
   PRICES: '/api/pharmacy/prices',
+
+  // 收费结算
+  CHARGING_RECORDS: '/api/charging/records',
+  CHARGING_PAY: '/api/charging/pay',
+  CHARGING_DAILY_SUMMARY: '/api/charging/daily-summary',
+
+  // 药师审核
+  PRESCRIPTION_AUDIT_QUEUE: '/api/prescriptions/audit-queue',
+  PRESCRIPTION_AUDIT: (id: number) => `/api/prescriptions/${id}/audit`,
 } as const

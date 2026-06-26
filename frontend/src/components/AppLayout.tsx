@@ -97,8 +97,10 @@ const menuItems = [
     children: [
       { key: '/pharmacy/drugs', icon: <ContainerOutlined />, label: '药品维护' },
       { key: '/pharmacy/purchases', icon: <ShoppingCartOutlined />, label: '进货管理' },
-      { key: '/pharmacy/sales', icon: <DollarOutlined />, label: '销售统计' },
+      { key: '/charging', icon: <DollarOutlined />, label: '收费结算' },
+      { key: '/audit', icon: <AuditOutlined />, label: '药师审核' },
       { key: '/prescription-flow', icon: <FileProtectOutlined />, label: '处方流转' },
+      { key: '/pharmacy/sales', icon: <DollarOutlined />, label: '销售统计' },
     ],
   },
   {

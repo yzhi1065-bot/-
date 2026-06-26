@@ -56,6 +56,8 @@ const InsurancePage = React.lazy(() => import('./pages/InsurancePage'))
 const ReferralPage = React.lazy(() => import('./pages/ReferralPage'))
 const HealthEduPage = React.lazy(() => import('./pages/HealthEduPage'))
 const PrescriptionFlowPage = React.lazy(() => import('./pages/PrescriptionFlowPage'))
+const ChargingPage = React.lazy(() => import('./pages/ChargingPage'))
+const AuditPage = React.lazy(() => import('./pages/AuditPage'))
 const AppointmentPage = React.lazy(() => import('./pages/AppointmentPage'))
 const MessagePushPage = React.lazy(() => import('./pages/MessagePushPage'))
 const EquipmentManagePage = React.lazy(() => import('./pages/EquipmentManagePage'))
@@ -129,6 +131,8 @@ export default function App() {
           <Route path="referral" element={<ReferralPage />} />
           <Route path="health-edu" element={<HealthEduPage />} />
           <Route path="prescription-flow" element={<PrescriptionFlowPage />} />
+          <Route path="charging" element={<ChargingPage />} />
+          <Route path="audit" element={<AuditPage />} />
           <Route path="appointment" element={<AppointmentPage />} />
           <Route path="message-push" element={<MessagePushPage />} />
           <Route path="equipment" element={<EquipmentManagePage />} />

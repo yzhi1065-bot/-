@@ -21,6 +21,8 @@ from app.api.pharmacy_price import router as pharmacy_price_router
 from app.api.pharmacy_import import router as pharmacy_import_router
 
 from app.api.fallback_api import router as fallback_router
+from app.api.charging import router as charging_router
+from app.api.prescription_flow import router as prescription_flow_router
 
 __all__ = [
     "auth_router", "patients_router", "diagnosis_router",
@@ -32,4 +34,6 @@ __all__ = [
     "pharmacy_price_router",
     "pharmacy_import_router",
     "fallback_router",
+    "charging_router",
+    "prescription_flow_router",
 ]
